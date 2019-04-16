@@ -1,0 +1,25 @@
+{
+  "name": "what3words",
+  "version": "3.0.0",
+  "summary": "w3w-swift-wrapper allows you to convert a 3 word address to coordinates or to convert coordinates to a 3 word address",
+  "homepage": "https://github.com/what3words/w3w-swift-wrapper",
+  "license": {
+    "type": "MIT"
+  },
+  "authors": {
+    "what3words": "support@what3words.com"
+  },
+  "requires_arc": true,
+  "platforms": {
+    "osx": "10.10",
+    "ios": "8.0"
+  },
+  "source": {
+    "git": "https://github.com/what3words/w3w-swift-wrapper.git",
+    "tag": "3.0.0"
+  },
+  "source_files": "Sources/*.swift",
+  "pod_target_xcconfig": {
+    "SWIFT_VERSION": "4.0"
+  }
+}

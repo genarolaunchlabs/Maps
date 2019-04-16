@@ -9,11 +9,13 @@ PODS:
   - SDWebImage (4.4.5):
     - SDWebImage/Core (= 4.4.5)
   - SDWebImage/Core (4.4.5)
+  - what3words (3.0.0)
 
 DEPENDENCIES:
   - GoogleMaps
   - GooglePlaces
   - SDWebImage
+  - what3words (from `https://github.com/what3words/w3w-swift-wrapper.git`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -21,11 +23,21 @@ SPEC REPOS:
     - GooglePlaces
     - SDWebImage
 
+EXTERNAL SOURCES:
+  what3words:
+    :git: https://github.com/what3words/w3w-swift-wrapper.git
+
+CHECKOUT OPTIONS:
+  what3words:
+    :commit: 0fb5de46295e4206ac13b13643389ca6e243740c
+    :git: https://github.com/what3words/w3w-swift-wrapper.git
+
 SPEC CHECKSUMS:
   GoogleMaps: fd5c9fa58871781b9fb94d4936f19c69fe60ce32
   GooglePlaces: f09e76993c9c3ee4af8f4f7f535bb94d6aa3b649
   SDWebImage: ecc03494e973b93b80213649d32175f8d2d17d4d
+  what3words: cbb6c7fa4160785e01c38a848441f234fbdc76ae
 
-PODFILE CHECKSUM: 8cb4a07134d883d10c5b78b3cd71b9129c063406
+PODFILE CHECKSUM: 7444c28ac93a80948429e083b5d1621856c0f291
 
 COCOAPODS: 1.6.0

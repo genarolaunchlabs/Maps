@@ -14,9 +14,9 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0711EC04E409E9D34EC59DBA1425CC8F"
-               BuildableName = "libPods-Maps.a"
-               BlueprintName = "Pods-Maps"
+               BlueprintIdentifier = "DF1E4368F7C3AA217FBD007D19D12051"
+               BuildableName = "libwhat3words.a"
+               BlueprintName = "what3words"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
