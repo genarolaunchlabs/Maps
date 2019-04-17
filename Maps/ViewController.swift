@@ -13,56 +13,61 @@ import what3words
 import CoreLocation
 
 class ViewController: UIViewController {
-    var oldLayer = TileLayer()
+    
+    let locationManager = CLLocationManager()
+    
+    var mapView : GMSMapView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        GMSServices.provideAPIKey("AIzaSyBxxEUEvLuvaqemyRo4AmKF90QTVbiC6po")
-        GMSPlacesClient.provideAPIKey("AIzaSyBxxEUEvLuvaqemyRo4AmKF90QTVbiC6po")
+        mapView = GMSMapView()
         
-        let rect = CGRect(origin: .zero, size: CGSize(width: 100, height: 100))
-        let camera = GMSCameraPosition.camera(withLatitude: 37.621262, longitude: -122.378945, zoom: 20)
-        
-        let mapView = GMSMapView.map(withFrame: rect, camera: camera)
-        
-        mapView.delegate = self
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+        mapView?.tintColor = UIColor.clear
         
         
-        
-        
-        
+        mapView?.delegate = self
         view = mapView
-        
-//        let layer = TestTileLayer()
-//        layer.tileSize = 50
-//        layer.map = mapView
     }
-
-}
-
-class TileLayer: GMSSyncTileLayer {
-//    private var coloredTile: UIImage
-//    private var blankTile: UIImage
-//    override init() {
-//        print("Tile layer initialized")
-//        coloredTile = UIImage(named: "tile-colored")!
-//        blankTile = UIImage(named: "tile")!
-//    }
-    override func tileFor(x: UInt, y: UInt, zoom: UInt) -> UIImage? {
-        // render an image every tile.
+    
+    private func reverseGeocodeCoordinate(_ coordinate: CLLocationCoordinate2D) {
         
-        if (x % 3 == Int.random(in: 0 ... 5)) {
-            return UIImage(named: "tile-colored")
-//            return coloredTile
-        } else {
-            return UIImage(named: "tile")
-//            return blankTile
+        // 1
+        let geocoder = GMSGeocoder()
+        
+        // 2
+        geocoder.reverseGeocodeCoordinate(coordinate) { response, error in
+            guard let address = response?.firstResult(), let lines = address.lines else {
+                return
+            }
+            
+            // 4
+            UIView.animate(withDuration: 0.25) {
+                self.view.layoutIfNeeded()
+            }
         }
     }
+    
+    func imageWithImage(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
+    }
+
+
 }
 
 extension ViewController: GMSMapViewDelegate {
+    func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
+        reverseGeocodeCoordinate(position.target)
+    }
+
     func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
         let projection = mapView.projection.visibleRegion()
         
@@ -85,7 +90,6 @@ extension ViewController: GMSMapViewDelegate {
                         path.add(item.end)
                         
 //                        print("start \(item.start)")
-//                        path.add(item.end)
 //                        print("end \(item.end)")
 //                        print("index \(index)")
 //                        print("=============================================================================")
@@ -94,38 +98,63 @@ extension ViewController: GMSMapViewDelegate {
                         line.strokeColor = #colorLiteral(red: 0.6642242074, green: 0.6642400622, blue: 0.6642315388, alpha: 1)
                         line.map = mapView
                     }
+                    if let location = mapView.myLocation {
+                        let position = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                        let marker = GMSMarker()
+                        marker.position = position
+//                        marker.snippet = "Info window text"
+                        marker.icon = UIImage(named: "pin")
+                        marker.setIconSize(scaledToSize: .init(width: 40, height: 50))
+                        marker.map = mapView
+                        mapView.tintColor = UIColor.clear
+                    }
                 }
             }
         }else{
             print("bad: \(distanceInMeters)")
             mapView.clear()
         }
-        
-        
-        
-        let zoom = mapView.camera.zoom
-//        mapView.clear()
-        if zoom > 15 {
-//            let layer = TileLayer()
-//            layer.tileSize = 30
-//            layer.map = mapView
-//            oldLayer = layer
-//
-//            let southWest = CLLocationCoordinate2D(latitude: 40.712216, longitude: -74.22655)
-//            let northEast = CLLocationCoordinate2D(latitude: 40.773941, longitude: -74.12544)
-//            let overlayBounds = GMSCoordinateBounds(coordinate: southWest, coordinate: northEast)
-//
-//            // Image from http://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg
-//            let icon = UIImage(named: "tile-colored")
-//
-//            let overlay = GMSGroundOverlay(bounds: overlayBounds, icon: icon)
-//            overlay.bearing = 0
-//            overlay.map = mapView
-            
-            
-        }else{
-//            mapView.clear()
-        }
-//        print("map zoom is ",String(zoom))
     }
 }
+
+// MARK: - CLLocationManagerDelegate
+//1
+extension ViewController: CLLocationManagerDelegate {
+    // 2
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        // 3
+        guard status == .authorizedWhenInUse else {
+            return
+        }
+        
+//        mapView?.isMyLocationEnabled = true
+        mapView?.settings.myLocationButton = true
+        
+        
+        
+    }
+    
+    // 6
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.first else {
+            return
+        }
+        
+        print("location \(location)")
+        
+        // 7
+        mapView?.camera = GMSCameraPosition(target: location.coordinate, zoom: 20, bearing: 0, viewingAngle: 0)
+        mapView?.tintColor = UIColor.clear
+    }
+}
+
+extension GMSMarker {
+    func setIconSize(scaledToSize newSize: CGSize) {
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        icon?.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        icon = newImage
+    }
+}
+

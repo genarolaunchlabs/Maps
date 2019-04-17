@@ -2,6 +2,30 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:../../../Downloads/Ngohiong Express.gpx">
+   </FileRef>
+   <FileRef
+      location = "group:../../../Downloads/Benedicto College.gpx">
+   </FileRef>
+   <FileRef
+      location = "group:../../../Downloads/BADA.gpx">
+   </FileRef>
+   <FileRef
+      location = "group:../../../Downloads/Andy Hotel.gpx">
+   </FileRef>
+   <FileRef
+      location = "group:../../../Downloads/Benedicto College.gpx">
+   </FileRef>
+   <FileRef
+      location = "group:../../../Downloads/J Mall.gpx">
+   </FileRef>
+   <FileRef
+      location = "group:../../../Downloads/Jolibee Highway.gpx">
+   </FileRef>
+   <FileRef
+      location = "group:../../../Downloads/locs.gpx">
+   </FileRef>
+   <FileRef
       location = "group:Maps.xcodeproj">
    </FileRef>
    <FileRef
